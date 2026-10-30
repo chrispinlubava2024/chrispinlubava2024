@@ -92,20 +92,26 @@ function render(groups, repoCount) {
 </style>
 <rect class="bg" x=".5" y=".5" width="${W - 1}" height="${H - 1}" rx="10"/>
 <text x="${PAD}" y="30" class="title">Tech stack</text>
-<text x="${W - PAD}" y="30" class="sub" text-anchor="end">${repoCount} repos · public + private</text>
+<text x="${W - PAD}" y="30" class="sub" text-anchor="end">${repoCount} repos · public + private · each repo weighted equally</text>
 ${rows.join("\n")}
 </svg>
 `;
 }
 
 const repos = await listRepos();
+// By default every repo counts equally (its languages split the repo's weight by share), so many
+// small apps are not drowned out by one huge project. WEIGHT=bytes switches to raw bytes of code.
+const BY_BYTES = process.env.WEIGHT === "bytes";
 const totals = {};
 for (const r of repos) {
-  const langs = await gh(`/repos/${r.full_name}/languages`);
-  for (const [name, bytes] of Object.entries(langs)) {
-    if (!IGNORE.has(name)) totals[name] = (totals[name] || 0) + bytes;
+  const langs = Object.entries(await gh(`/repos/${r.full_name}/languages`)).filter(([n]) => !IGNORE.has(n));
+  const repoSum = langs.reduce((a, [, b]) => a + b, 0);
+  for (const [name, bytes] of langs) {
+    totals[name] = (totals[name] || 0) + (BY_BYTES ? bytes : bytes / repoSum);
   }
 }
+const personal = repos.filter((r) => r.owner.type === "User").length;
+console.log(`Repos: ${repos.length} (${personal} personal, ${repos.length - personal} from organisations)`);
 
 const sum = Object.values(totals).reduce((a, b) => a + b, 0);
 if (!sum) throw new Error("No language data found");
