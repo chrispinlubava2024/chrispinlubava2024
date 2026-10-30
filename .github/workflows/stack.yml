@@ -1,0 +1,32 @@
+name: Update tech stack
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/scripts/stack.mjs"
+      - ".github/workflows/stack.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  stack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build stack.svg
+        env:
+          GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN }}
+        run: node .github/scripts/stack.mjs
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stack.svg
+          git diff --cached --quiet || (git commit -m "Update tech stack" && git push)

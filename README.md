@@ -2,10 +2,8 @@
 
 I build web and mobile apps — Laravel, Flutter and more.
 
-### Languages I use
+### Tech stack
 
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=chrispinlubava2024&layout=compact&langs_count=8&hide_border=true)
+Calculated automatically from all my repositories (public and private), grouped by what I build with them.
 
-### GitHub stats
-
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=chrispinlubava2024&show_icons=true&hide_border=true)
+![Tech stack](./stack.svg)
