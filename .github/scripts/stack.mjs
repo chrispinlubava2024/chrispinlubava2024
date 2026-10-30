@@ -43,7 +43,7 @@ async function listRepos() {
   const owner = TOKEN ? (await gh("/user")).login : process.env.OWNER;
   if (!owner) throw new Error("Set GH_STATS_TOKEN, or OWNER for a public-only run");
   const base = TOKEN
-    ? "/user/repos?affiliation=owner&visibility=all"
+    ? "/user/repos?affiliation=owner,organization_member&visibility=all"
     : `/users/${owner}/repos?type=owner`;
   const repos = [];
   for (let page = 1; ; page++) {
@@ -51,7 +51,7 @@ async function listRepos() {
     repos.push(...batch);
     if (batch.length < 100) break;
   }
-  return repos.filter((r) => !r.fork && r.name !== owner);
+  return repos.filter((r) => !r.fork && r.full_name !== `${owner}/${owner}`);
 }
 
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);

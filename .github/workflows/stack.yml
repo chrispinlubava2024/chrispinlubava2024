@@ -23,6 +23,7 @@ jobs:
       - name: Build stack.svg
         env:
           GH_STATS_TOKEN: ${{ secrets.GH_STATS_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
         run: node .github/scripts/stack.mjs
       - name: Commit if changed
         run: |
