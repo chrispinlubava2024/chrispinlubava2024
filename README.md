@@ -1,6 +1,6 @@
 ### Hi, I'm Chrispin Lubava 👋
 
-I build web and mobile apps — Laravel, Flutter and more.
+I build web and mobile apps — Laravel, Kotlin, Flutter and more.
 
 ### Tech stack
 
